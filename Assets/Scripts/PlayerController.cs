@@ -13,8 +13,31 @@ public class PlayerController : NetworkBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
 
-        Vector3 movement = new Vector3(horizontal, 0f, vertical);
+        Camera playerCamera = Camera.main;
 
-        transform.position += movement.normalized * moveSpeed * Time.deltaTime;
+        if (playerCamera == null)
+            return;
+
+        // Get camera directions.
+        Vector3 cameraForward = playerCamera.transform.forward;
+        Vector3 cameraRight = playerCamera.transform.right;
+
+        // Keep movement horizontal.
+        cameraForward.y = 0f;
+        cameraRight.y = 0f;
+
+        cameraForward.Normalize();
+        cameraRight.Normalize();
+
+        // Build movement relative to camera.
+        Vector3 movement =
+            cameraForward * vertical +
+            cameraRight * horizontal;
+
+        if (movement.sqrMagnitude > 1f)
+            movement.Normalize();
+
+        transform.position +=
+            movement * moveSpeed * Time.deltaTime;
     }
 }
