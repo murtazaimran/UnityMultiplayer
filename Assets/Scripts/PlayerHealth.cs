@@ -5,10 +5,18 @@ public class PlayerHealth : NetworkBehaviour
 {
     [SerializeField] private int maxHealth = 100;
     [SerializeField] private HealthBarUI healthBarUI;
+    [SerializeField] private DeathUI deathUI;
 
     private NetworkVariable<int> currentHealth =
         new NetworkVariable<int>();
 
+    void Awake()
+    {
+      if(deathUI == null)
+      {
+        deathUI = FindObjectOfType<DeathUI>()?.GetComponent<DeathUI>();
+        }
+    }
     public override void OnNetworkSpawn()
     {
         currentHealth.OnValueChanged += OnHealthChanged;
@@ -36,9 +44,11 @@ public class PlayerHealth : NetworkBehaviour
 
         UpdateHealthBar();
 
-        if (newHealth <= 0)
+        // Only the player who owns this object
+        // should see the death screen.
+        if (newHealth <= 0 && IsOwner)
         {
-            HandleDeath();
+            ShowDeathScreen();
         }
     }
 
@@ -51,6 +61,20 @@ public class PlayerHealth : NetworkBehaviour
             currentHealth.Value,
             maxHealth
         );
+    }
+
+    private void ShowDeathScreen()
+    {
+        if (deathUI == null)
+        {
+            Debug.LogWarning(
+                "DeathUI is not assigned on PlayerHealth."
+            );
+
+            return;
+        }
+
+        deathUI.ShowDeathScreen();
     }
 
     public void TakeDamage(int damage)
@@ -72,7 +96,7 @@ public class PlayerHealth : NetworkBehaviour
 
     private void HandleDeath()
     {
-        // Only the server should despawn
+        // Only the server can despawn
         // the networked player.
         if (!IsServer)
             return;
@@ -82,4 +106,6 @@ public class PlayerHealth : NetworkBehaviour
 
         NetworkObject.Despawn();
     }
+
+  
 }

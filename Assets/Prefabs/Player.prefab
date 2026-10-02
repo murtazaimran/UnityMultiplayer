@@ -201,9 +201,9 @@ MonoBehaviour:
   AuthorityMode: 1
   TickSyncChildren: 0
   UseUnreliableDeltas: 0
-  SyncPositionX: 1
-  SyncPositionY: 1
-  SyncPositionZ: 1
+  SyncPositionX: 0
+  SyncPositionY: 0
+  SyncPositionZ: 0
   SyncRotAngleX: 1
   SyncRotAngleY: 1
   SyncRotAngleZ: 1
@@ -235,6 +235,7 @@ MonoBehaviour:
   ShowTopMostFoldoutHeaderGroup: 1
   maxHealth: 100
   healthBarUI: {fileID: 2301133947343150324}
+  deathUI: {fileID: 0}
 --- !u!114 &1341707670878410475
 MonoBehaviour:
   m_ObjectHideFlags: 0

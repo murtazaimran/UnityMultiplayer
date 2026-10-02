@@ -20,18 +20,40 @@ public class PlayerShooter : NetworkBehaviour
             if (playerCamera == null)
                 return;
 
-            // Use the camera direction for aiming.
-            Vector3 direction = playerCamera.transform.forward;
+            // Shoot a ray from the center of the camera.
+            Ray cameraRay = new Ray(
+                playerCamera.transform.position,
+                playerCamera.transform.forward
+            );
 
-            FireServerRpc(direction);
+            Vector3 aimPoint =
+                cameraRay.origin +
+                cameraRay.direction * shootRange;
+
+            // Find exactly what the crosshair is pointing at.
+            if (Physics.Raycast(
+                cameraRay,
+                out RaycastHit cameraHit,
+                shootRange))
+            {
+                aimPoint = cameraHit.point;
+            }
+
+            // Send the point we're aiming at to the server.
+            FireServerRpc(aimPoint);
         }
     }
 
     [ServerRpc]
-    private void FireServerRpc(Vector3 direction)
+    private void FireServerRpc(Vector3 aimPoint)
     {
-        // The server decides where the shot starts.
+        // Server decides where the shot originates.
         Vector3 origin = transform.position + Vector3.up;
+
+        // Calculate direction from the player toward
+        // the point the client was aiming at.
+        Vector3 direction =
+            (aimPoint - origin).normalized;
 
         Vector3 shotEndPoint =
             origin + direction * shootRange;
@@ -83,7 +105,7 @@ public class PlayerShooter : NetworkBehaviour
                 return;
             }
 
-            // Server applies the damage.
+            // Server applies damage.
             targetHealth.TakeDamage(25);
         }
         else
