@@ -7,6 +7,7 @@ public class PlayerShooter : NetworkBehaviour
     [SerializeField] private float shootRange = 500f;
     [SerializeField] private LineRenderer shotLine;
     [SerializeField] private float shotDuration = 0.1f;
+    [SerializeField] private float shotLineWidth = 0.02f;
 
     private void Update()
     {
@@ -136,6 +137,10 @@ public class PlayerShooter : NetworkBehaviour
         Vector3 start,
         Vector3 end)
     {
+
+
+        shotLine.startWidth = shotLineWidth;
+        shotLine.endWidth = shotLineWidth;
         shotLine.SetPosition(0, start);
         shotLine.SetPosition(1, end);
 

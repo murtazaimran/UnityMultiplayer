@@ -5,6 +5,7 @@ public class ThirdPersonCamera : MonoBehaviour
     [SerializeField] private float mouseSensitivity = 3f;
     [SerializeField] private float distance = 6f;
     [SerializeField] private float height = 3f;
+    [SerializeField] private Sprite crosshairSprite;
 
     private Transform target;
 
@@ -92,22 +93,26 @@ public class ThirdPersonCamera : MonoBehaviour
         Canvas canvas = crosshair.AddComponent<Canvas>();
         canvas.renderMode = RenderMode.ScreenSpaceOverlay;
 
-        GameObject dot = new GameObject("Dot");
+        GameObject imageObject = new GameObject("Image");
 
-        dot.transform.SetParent(crosshair.transform);
+        imageObject.transform.SetParent(
+            crosshair.transform
+        );
 
         RectTransform rect =
-            dot.AddComponent<RectTransform>();
+            imageObject.AddComponent<RectTransform>();
 
         rect.anchorMin = new Vector2(0.5f, 0.5f);
         rect.anchorMax = new Vector2(0.5f, 0.5f);
+
         rect.anchoredPosition = Vector2.zero;
 
-        rect.sizeDelta = new Vector2(30f, 30f);
+        rect.sizeDelta = new Vector2(32f, 32f);
 
         UnityEngine.UI.Image image =
-            dot.AddComponent<UnityEngine.UI.Image>();
+            imageObject.AddComponent<UnityEngine.UI.Image>();
 
-        image.color = Color.white;
+        image.sprite = crosshairSprite;
+        image.preserveAspect = true;
     }
 }
