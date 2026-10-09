@@ -13,17 +13,28 @@ public class NetworkProjectileSpawner : NetworkBehaviour
 
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            RequestSpawnRpc();
+            Camera playerCamera = Camera.main;
+
+            if (playerCamera == null)
+                return;
+
+            Vector3 shootDirection =
+                playerCamera.transform.forward;
+
+            RequestSpawnRpc(shootDirection);
         }
     }
 
-    [Rpc(SendTo.Server, InvokePermission = RpcInvokePermission.Everyone)]
-    private void RequestSpawnRpc()
+    [Rpc(
+        SendTo.Server,
+        InvokePermission = RpcInvokePermission.Everyone
+    )]
+    private void RequestSpawnRpc(Vector3 shootDirection)
     {
-        SpawnProjectile();
+        SpawnProjectile(shootDirection);
     }
 
-    private void SpawnProjectile()
+    private void SpawnProjectile(Vector3 shootDirection)
     {
         if (!IsServer)
             return;
@@ -33,6 +44,7 @@ public class NetworkProjectileSpawner : NetworkBehaviour
             Debug.LogError(
                 "Projectile prefab is not assigned."
             );
+
             return;
         }
 
@@ -41,13 +53,20 @@ public class NetworkProjectileSpawner : NetworkBehaviour
             Debug.LogError(
                 "Projectile spawn point is not assigned."
             );
+
             return;
         }
+
+        if (shootDirection.sqrMagnitude < 0.01f)
+            return;
+
+        Quaternion projectileRotation =
+            Quaternion.LookRotation(shootDirection);
 
         NetworkObject projectile = Instantiate(
             projectilePrefab,
             spawnPoint.position,
-            spawnPoint.rotation
+            projectileRotation
         );
 
         projectile.SpawnWithOwnership(
@@ -56,8 +75,7 @@ public class NetworkProjectileSpawner : NetworkBehaviour
 
         Debug.Log(
             $"Server spawned projectile from " +
-            $"Player {OwnerClientId} | " +
-            $"Projectile Owner: {projectile.OwnerClientId}"
+            $"Player {OwnerClientId}"
         );
     }
 }
