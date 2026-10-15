@@ -8,4 +8,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/MultiplayerTest.unity
     guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 1
+    path: Assets/Scenes/CoOpArena.unity
+    guid: 685ffc4f2a48d4710a8e7fc1d224ba77
   m_configObjects: {}

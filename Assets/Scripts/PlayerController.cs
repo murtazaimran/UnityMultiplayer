@@ -131,11 +131,11 @@ public class PlayerController : NetworkBehaviour
 
         SendMovementStateClientRpc(state);
 
-        Debug.Log(
-            $"Server processed input | " +
-            $"Player: {OwnerClientId} | " +
-            $"Sequence: {inputData.SequenceNumber}"
-        );
+        // Debug.Log(
+        //     $"Server processed input | " +
+        //     $"Player: {OwnerClientId} | " +
+        //     $"Sequence: {inputData.SequenceNumber}"
+        // );
     }
 
     [ClientRpc]
@@ -163,11 +163,11 @@ public class PlayerController : NetworkBehaviour
                 ApplyMovement(input);
             }
 
-            Debug.Log(
-                $"Reconciled | " +
-                $"Server Input: {state.LastProcessedInput} | " +
-                $"Remaining Inputs: {pendingInputs.Count}"
-            );
+            // Debug.Log(
+            //     $"Reconciled | " +
+            //     $"Server Input: {state.LastProcessedInput} | " +
+            //     $"Remaining Inputs: {pendingInputs.Count}"
+            // );
         }
         else
         {
